@@ -1,11 +1,12 @@
 import numpy as np
 import pytest
 
-from mc_pricer import mc_price
-from black_scholes import bs_price
-
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+from monte_carlo import mc_price
+from black_scholes import bs_price
+
 
 @pytest.mark.slow
 def test_convergence_to_bs():

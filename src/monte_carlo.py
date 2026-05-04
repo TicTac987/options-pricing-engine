@@ -141,8 +141,27 @@ def mc_price(
     
     
     S_T = _simulate_terminal_prices(S0, T, r, sigma, n_paths, seed)
-
     
+    
+    # When sigma=0, every simulated path is identical (deterministic), so
+    # the payoff has zero variance. We return the exact value directly to
+    # avoid floating-point noise in std(ddof=1)
+    
+    if sigma == 0.0:
+    # S_T = S0 * exp(r*T) for all paths; discount cancels exp(r*T)
+        intrinsic_fwd = ( (S0 - K * discount_factor) if option_type == "call"
+                        else (K * discount_factor - S0) )
+        
+        price_det = float(max(intrinsic_fwd, 0.0))
+        
+        return {
+        "price": price_det,
+        "std_error": 0.0,
+        "ci_95": (price_det, price_det),
+        "n_paths": int(n_paths),
+    }
+    
+        
     # payoff (vectorised)
     if option_type == "call":
         payoffs = np.maximum(S_T - K, 0.0)

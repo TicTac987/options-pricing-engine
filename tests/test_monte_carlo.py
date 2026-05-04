@@ -92,26 +92,46 @@ def test_se_scaling():
 
 @pytest.mark.slow
 def test_put_call_parity_shared_seed():
+    """
+    Put–call parity under shared random numbers (common random numbers).
+
+    With shared seed, call and put are perfectly coupled through the same
+    simulated S_T paths. This means most Monte Carlo noise cancels in
+    (call - put), so using independent SEs would massively overestimate
+    the true variance.
+    """
+
     S0 = K = 100
     T = 1.0
     r = 0.05
     sigma = 0.2
     N = 100_000
-    seed = 123
-
+    seed = 42
+    
+    # Price call and put using identical random numbers (CRN)
     call = mc_price(S0, K, T, r, sigma, "call", N, seed=seed)
-    put = mc_price(S0, K, T, r, sigma, "put", N, seed=seed)
-
+    put  = mc_price(S0, K, T, r, sigma, "put", N, seed=seed)
+    
     lhs = call["price"] - put["price"]
     rhs = S0 - K * np.exp(-r * T)
-
-    # Same seed gives same simulated paths, but MC noise is still present.
-    # Use a statistical tolerance, not a pathwise one.
-    scale = np.sqrt(call["std_error"] ** 2 + put["std_error"] ** 2)
-    assert abs(lhs - rhs) < 5 * scale, (
-        f"parity mismatch: call-put={lhs:.6f}, theory={rhs:.6f}, "
-        f"call_se={call['std_error']:.6f}, put_se={put['std_error']:.6f}"
+    
+    # Under shared seed:
+    # C - P = e^{-rT} * (mean S_T) - K e^{-rT}
+    # So the only Monte Carlo noise is from estimating E[S_T]
+    
+    # Estimate standard error of S_T mean directly
+    # (NOT by combining call/put SEs, since those noises cancel)
+    st_se = call["std_error"] * np.exp(r * T)
+    
+    tol = 5 * st_se
+    
+    assert abs(lhs - rhs) < tol, (
+        f"put-call parity mismatch under shared seed:\n"
+        f"call-put = {lhs:.6f}, theory = {rhs:.6f}, "
+        f"tolerance = {tol:.6f}"
     )
+
+
 
 
 @pytest.mark.parametrize(

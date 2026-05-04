@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from math import sqrt, exp
 from typing import Literal, TypedDict
+from processes import simulate_gbm_paths
 
 import numpy as np
 
@@ -36,19 +37,6 @@ class MCResult(TypedDict):
     std_error: float
     ci_95: tuple[float, float]
     n_paths: int
-
-
-def _simulate_terminal_prices(S0: float, T: float, r: float, sigma: float,
-    n_paths: int, seed: int | None) -> np.ndarray:
-    
-    # simulation under the RISK-NEUTRAL measure Q 
-    # CRITICAL: drift is r, NOT a real-world mu. This is the *only* place
-    # the change of measure enters the code. Pricing is E^Q[ e^{-rT} g(S_T) ].
-    
-    rng = np.random.default_rng(seed)
-    z = rng.standard_normal(n_paths)
-    log_S_T = np.log(S0) + (r - 0.5 * sigma**2) * T + sigma * sqrt(T) * z
-    return np.exp(log_S_T)
 
 
 def mc_price(
@@ -140,8 +128,17 @@ def mc_price(
         }
     
     
-    S_T = _simulate_terminal_prices(S0, T, r, sigma, n_paths, seed)
+    _, S = simulate_gbm_paths(
+        S0=S0,
+        mu=r,          # risk-neutral drift
+        sigma=sigma,
+        T=T,
+        n_steps=1,
+        n_paths=n_paths,
+        seed=seed
+    )
     
+    S_T = S[:, -1]    
     
     # When sigma=0, every simulated path is identical (deterministic), so
     # the payoff has zero variance. We return the exact value directly to

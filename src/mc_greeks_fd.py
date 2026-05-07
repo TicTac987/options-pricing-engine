@@ -1,5 +1,5 @@
 """
-mc_greeks.py
+mc_greeks_fd.py
 ============
  
 Monte Carlo Greeks via central finite differences with Common Random Numbers
@@ -176,8 +176,8 @@ def _validate_inputs(
         raise ValueError(f"T must be positive, got {T}.")
     if sigma <= 0:
         raise ValueError(f"sigma must be positive, got {sigma}.")
-    if n_paths < 1:
-        raise ValueError(f"n_paths must be >= 1, got {n_paths}.")
+    if n_paths < 2:
+        raise ValueError(f"n_paths must be >= 2, got {n_paths}.")
  
     for name, h in (
         ("h_S_rel", h_S_rel),

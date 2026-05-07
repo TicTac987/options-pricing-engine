@@ -1,6 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+
 
 def simulate_gbm_paths(S0, mu, sigma, T, n_steps, n_paths, seed=None):
     """

@@ -7,8 +7,14 @@ from typing import Literal
 BS_TIME_EPSILON = 1e-9
 BS_VOL_EPSILON  = 1e-12
 
-def bs_price(S0, K, T, r: float, sigma: float, 
-             option_type: Literal["call", "put"]):
+def bs_price(
+        S0: float,
+        K: float,
+        T: float,
+        r: float,
+        sigma: float, 
+        option_type: Literal["call", "put"]
+    ) -> float:
     """
     Black-Scholes price for European options (vectorised).
 

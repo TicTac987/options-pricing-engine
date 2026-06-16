@@ -1,11 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import sys
-import os
-sys.path.append(os.path.abspath("../src"))
 
-from processes import simulate_gbm_paths
+from optpricing.processes import simulate_gbm_paths
 
 
 # Core Brownian Motion Simulation 

@@ -1,9 +1,7 @@
 import numpy as np
 import pytest
-import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from black_scholes import bs_price
+from optpricing.black_scholes import bs_price
 
 def _parity_residual(S0, K, T, r, sigma):
     """C - P - (S0 - K·e^{-rT}) — should be zero."""

@@ -42,7 +42,7 @@ be unusable.
 
 from __future__ import annotations
 from typing import Literal, TypedDict
-from monte_carlo import mc_price
+from optpricing.monte_carlo import mc_price
 
 __all__ = ["GreeksResult", "mc_greeks_fd"]
 

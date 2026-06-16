@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from math import sqrt, exp
 from typing import Literal, TypedDict
-from processes import simulate_gbm_paths
+from scipy.stats import norm
+
+from optpricing.processes import simulate_gbm_paths
 
 import numpy as np
 
 BS_TIME_EPSILON = 1e-12
-Z_975 = 1.9599639845400545
+Z_975:float = float(norm.ppf(0.975))
 
 class MCResult(TypedDict):
     """
@@ -128,18 +130,6 @@ def mc_price(
         }
     
     
-    _, S = simulate_gbm_paths(
-        S0=S0,
-        mu=r,          # risk-neutral drift
-        sigma=sigma,
-        T=T,
-        n_steps=1,
-        n_paths=n_paths,
-        seed=seed
-    )
-    
-    S_T = S[:, -1]    
-    
     # When sigma=0, every simulated path is identical (deterministic), so
     # the payoff has zero variance. We return the exact value directly to
     # avoid floating-point noise in std(ddof=1)
@@ -157,6 +147,20 @@ def mc_price(
         "ci_95": (price_det, price_det),
         "n_paths": int(n_paths),
     }
+    
+    
+    _, S = simulate_gbm_paths(
+        S0=S0,
+        mu=r,          # risk-neutral drift
+        sigma=sigma,
+        T=T,
+        n_steps=1,
+        n_paths=n_paths,
+        seed=seed
+    )
+    
+    S_T = S[:, -1]    
+
     
         
     # payoff (vectorised)

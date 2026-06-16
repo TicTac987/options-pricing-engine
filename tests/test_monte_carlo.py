@@ -1,11 +1,8 @@
 import numpy as np
 import pytest
 
-import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-
-from monte_carlo import mc_price
-from black_scholes import bs_price
+from optpricing.monte_carlo import mc_price
+from optpricing.black_scholes import bs_price
 
 
 @pytest.mark.slow

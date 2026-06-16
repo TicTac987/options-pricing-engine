@@ -20,11 +20,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-# Make the project's src/ importable when this file is run directly.
-_HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(_HERE.parent / "src"))
 
-from black_scholes import bs_greeks, bs_price  # noqa: E402  (after sys.path tweak)
+
+from optpricing.black_scholes import bs_greeks, bs_price  # noqa: E402  (after sys.path tweak)
 
 
 # Output directory

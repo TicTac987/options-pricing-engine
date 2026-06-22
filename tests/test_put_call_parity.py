@@ -4,7 +4,7 @@ import pytest
 from optpricing.black_scholes import bs_price
 
 def _parity_residual(S0, K, T, r, sigma):
-    """C - P - (S0 - K·e^{-rT}) — should be zero."""
+    """C - P - (S0 - K·e^{-rT}), should be zero."""
     C = bs_price(S0, K, T, r, sigma, "call")
     P = bs_price(S0, K, T, r, sigma, "put")
     return (C - P) - (S0 - K * np.exp(-r * T))

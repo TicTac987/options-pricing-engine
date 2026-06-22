@@ -118,7 +118,7 @@ def bs_greeks(S0: float, K: float, T: float, r: float,
     
     
     #Edge case: T -> 0 
-    # φ(d1) → 0, so Gamma/Vega vanish; Delta becomes a step function on spot.
+    # phi(d1) → 0, so Gamma/Vega vanish; Delta becomes a step function on spot.
     if T < BS_TIME_EPSILON:
         if option_type == "call":
             delta = 1.0 if S0 > K else (0.5 if S0 == K else 0.0)
@@ -134,8 +134,8 @@ def bs_greeks(S0: float, K: float, T: float, r: float,
         }
     
     
-    # Edge case: σ → 0 
-    # Terminal price is deterministic: F = S₀eʳᵀ.
+    # Edge case: sigma → 0 
+    # Terminal price is deterministic: F = S_0 exp(r*T)
     # Gamma/Vega vanish; Theta/Rho from discounted intrinsic value.
     if sigma < BS_VOL_EPSILON:
         disc = np.exp(-r * T)
@@ -167,7 +167,7 @@ def bs_greeks(S0: float, K: float, T: float, r: float,
     d2     = d1 - sigma * sqrtT
     disc   = np.exp(-r * T)
 
-    Phi_d1 = norm.cdf(d1)
+    PPhi_d1 = norm.cdf(d1)
     Phi_d2 = norm.cdf(d2)
     phi_d1 = norm.pdf(d1)
 
@@ -176,11 +176,11 @@ def bs_greeks(S0: float, K: float, T: float, r: float,
     vega  = S0 * phi_d1 * sqrtT
 
     if option_type == "call":
-        delta = Phi_d1
+        delta = PPhi_d1
         theta = -(S0 * phi_d1 * sigma) / (2.0 * sqrtT) - r * K * disc * Phi_d2
         rho   =  K * T * disc * Phi_d2
     else:
-        delta = Phi_d1 - 1.0          # put-call parity: Δ_put = Δ_call − 1
+        delta = PPhi_d1 - 1.0    # put-call parity: delta_put = delta_call − 1
         theta = -(S0 * phi_d1 * sigma) / (2.0 * sqrtT) + r * K * disc * norm.cdf(-d2)
         rho   = -K * T * disc * norm.cdf(-d2)
     

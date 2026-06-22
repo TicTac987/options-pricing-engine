@@ -209,7 +209,7 @@ def _validate_inputs(
     
 if __name__ == "__main__":
     # Demo: ATM 1-year European call, side-by-side MC vs analytic.
-    from black_scholes import bs_greeks
+    from optpricing.black_scholes import bs_greeks
  
     params = dict(
         S0=100.0,

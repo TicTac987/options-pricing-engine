@@ -7,9 +7,9 @@ def simulate_gbm_paths(S0, mu, sigma, T, n_steps, n_paths, seed=None):
 
     Parameters
     ----------
-    S0      : float  — initial stock price  (S_0)
-    mu      : float  — drift               (μ)
-    sigma   : float  — volatility          (σ)
+    S0      : float  — initial stock price 
+    mu      : float  — drift               
+    sigma   : float  — volatility          
     T       : float  — terminal time
     n_steps : int    — number of time steps
     n_paths : int    — number of independent paths
@@ -24,10 +24,10 @@ def simulate_gbm_paths(S0, mu, sigma, T, n_steps, n_paths, seed=None):
 
     dt = T / n_steps
 
-    # Draw a (n_paths × n_steps) array of standard normals Z_{i,k}
+    # Draw a (n_paths * n_steps) array of standard normals Z_{i,k}
     Z = rng.standard_normal((n_paths, n_steps))
 
-    # Compute log-increments: (μ - σ²/2)Δt + σ√Δt · Z
+    # Compute log-increments: 
     log_increments = (mu - sigma**2 / 2) * dt + sigma * np.sqrt(dt) * Z
 
     # Cumulative sum along axis=1 gives log(S_t / S_0) at each step
